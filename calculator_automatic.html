@@ -56,29 +56,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <p>In the next form you can calculate a number: </p>
-                    <form class="form-horizontal" onsubmit="calculateSubmit(); return false">
-                        <div class="form-group">
-                            <label for="decto" class="col-sm-2 control-label">DECIMAL</label>
-                            <input type="text" pattern="^([0-9]+)$" class="form-control number" id="decto" placeholder="DECIMAL">
-                        </div>
-                        <div class="form-group">
-                            <label for="hexto" class="col-sm-2 control-label">HEXADECIMAL</label>
-                            <input type="text" pattern="^([a-fA-F0-9]+)$" class="form-control number" id="hexto" placeholder="HEXADECIMAL">
-                        </div>
-                        <div class="form-group">
-                            <label for="octto" class="col-sm-2 control-label">OCTAL</label>
-                            <input type="text" pattern="^([0-8]+)$"  class="form-control number" id="octto" placeholder="OCTAL">
-                        </div>
-                        <div class="form-group">
-                            <label for="binto" class="col-sm-2 control-label">BINARIO</label>
-                            <input type="text" pattern="^([0-1]+)$" class="form-control number" id="binto" placeholder="BINARIO">
-                        </div>
-                        <input type="hidden" class="form-control number" id="lastFocus">
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-default">Submit</button>
-                            </div>
-                        </div>
+                    <form id="form" class="form-horizontal" onsubmit="calculateSubmit(); return false">
+                        
                     </form>
                 </div>
             </div>
@@ -99,39 +78,30 @@
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script src="js/ie10-viewport-bug-workaround.js"></script>
         <script type="text/javascript">
+            conversors = {"decto":{"label": "DECIMAL","regexForm": "^([0-9]+)$" ,"regex": /[0-9]+$/},
+                            "hexto":{"label": "HEXADECIMAL","regexForm": "^([a-fA-F0-9]+)" ,"regex": /[a-fA-F0-9]+$/},
+                            "octto":{"label": "OCTAL","regexForm": "^([0-7]+)$" ,"regex": /[0-7]+$/},
+                            "binto":{"label": "BINARIO","regexForm": "^([0-1]+)$" ,"regex": /[0-1]+$/}
+                            
+                            }
+
+            createForm(conversors);
+            
             var calculate = function(identificator) {
                 var value = $("#"+identificator).val();
                // Conditions
-                hex = (identificator == "hexto" && value.match(/[a-fA-F0-9]+/ig) != null && value.match(/[a-fA-F0-9]+/ig).length > 0)
-                bin = (identificator == "binto" && value.match(/[0-1]+/ig) != null && value.match(/[0-1]+/ig).length > 0)
-                oct = (identificator == "octto" && value.match(/[0-8]+/ig) != null && value.match(/[0-8]+/ig).length > 0)
-                dec = (identificator == "decto" && value.match(/[0-9]+/ig) != null && value.match(/[0-9]+/ig).length > 0)
 
-                if(dec || hex || bin || oct){
-                   switch(identificator) {
-                        case "decto":
-                            $("#hexto").val(decto(value, 'hex'))
-                            $("#octto").val(decto(value, 'oct'))
-                            $("#binto").val(decto(value, 'bin'))
-                            break;
-                        case "hexto":
-                            $("#decto").val(hexto(value, 'dec'))
-                            $("#octto").val(hexto(value, 'oct'))
-                            $("#binto").val(hexto(value, 'bin'))
-                            break;
-                        case "octto":
-                            $("#decto").val(octto(value, 'dec'))
-                            $("#hexto").val(octto(value, 'hex'))
-                            $("#binto").val(octto(value, 'bin'))
-                            break;
-                        case "binto":
-                            $("#decto").val(binto(value, 'dec'))
-                            $("#hexto").val(binto(value, 'hex'))
-                            $("#octto").val(binto(value, 'oct'))
-                            break;    
+               active_error = true
+                $.each( conversors, function( k, v ) {
+                    if(identificator == k && value.match(v["regex"]) != null && value.match(v["regex"]).length > 0){
+                        setValues(identificator, value)
+                        active_error = false
                     }
-                }else{
-                    alert("Please enter a valid number")
+                    
+                });
+
+                if(active_error){
+                   alert("Please enter a valid number")
                 }
             }
 
