@@ -68,6 +68,7 @@ var setValues = function(identificator, value){
     }
 }
 
+// Se puede automatizar más el switch anterior, llamar a todas las keys menos la que se llama igual (se reduce a 4 líneas)
 var createForm = function(structure, id="form"){
     ident = "#"+id;
     $.each(structure, function( k, v ) {
